@@ -1,0 +1,38 @@
+/* app/assets/css/main.css */
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Cormorant Garamond", Georgia, serif;
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+
+  --color-void: #000000;
+  --color-obsidian: #050505;
+  --color-ivory: #f4efe6;
+  --color-gold: #d4af6a;
+  --color-gold-muted: #b99b64;
+
+  --ease-silk: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-void);
+    color: var(--color-ivory);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-tap-highlight-color: transparent;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
+  ::selection {
+    background-color: rgba(212, 175, 106, 0.22);
+    color: var(--color-ivory);
+  }
+}
