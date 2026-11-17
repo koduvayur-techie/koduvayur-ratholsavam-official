@@ -29,6 +29,8 @@ export default defineNuxtConfig({
     '@nuxt/fonts',
     '@nuxtjs/sitemap',
     '@nuxtjs/robots',
+    '@vercel/speed-insights/nuxt',
+    '@vercel/analytics/nuxt'
   ],
 
   // 4. Google Fonts Configuration (Cormorant Garamond + Inter up to 700)

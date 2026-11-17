@@ -29,17 +29,20 @@ const STAGE_PHYSICS = {
   maxTrailNodes: 15,
 } as const
 
-// Crisp Character-by-Character Reveal Schedules
+// 3-Act Entrance Schedule:
+// Act 1: "SOMETHING IS COMING" (0.32s) -> "HOME" (1.05s - 2.67s)
+// Act 2: Koduvayur Logo delayed & slower (2.75s - 5.20s)
+// Act 3: Pond Countdown (5.18s - 5.66s) -> "ARRIVAL · 24.11.26 · 21:00 IST" (5.85s+)
 const eyebrowChars = Array.from('SOMETHING IS COMING').map((ch, idx) => ({
   id: idx,
   char: ch === ' ' ? '\u00A0' : ch,
-  delay: `${(0.75 + idx * 0.035).toFixed(3)}s`,
+  delay: `${(0.32 + idx * 0.035).toFixed(3)}s`,
 }))
 
 const arrivalChars = Array.from('ARRIVAL · 24.11.26 · 21:00 IST').map((ch, idx) => ({
   id: idx,
   char: ch === ' ' ? '\u00A0' : ch,
-  delay: `${(2.88 + idx * 0.022).toFixed(3)}s`,
+  delay: `${(5.85 + idx * 0.022).toFixed(3)}s`,
 }))
 
 const logoIndex = ref(0)
@@ -83,9 +86,11 @@ const isVideoModalOpen = ref(false)
 const isNativeFullscreen = ref(false)
 
 const logoButtonRef = ref<HTMLButtonElement | null>(null)
+const isLogoRevealed = ref(false)
 const isLogoHovered = ref(false)
 const isLogoCeremonyActive = ref(false)
 let logoCeremonyTimer: ReturnType<typeof setTimeout> | null = null
+let logoRevealTimer: ReturnType<typeof setTimeout> | null = null
 
 const playAnchorRef = ref<HTMLElement | null>(null)
 const playButtonRef = ref<HTMLButtonElement | null>(null)
@@ -401,6 +406,11 @@ onMounted(() => {
     nowTimestamp.value = Date.now()
   }, 1000)
 
+  // Unlock Logo Hover/Click Right as Act 2 Emergence Begins (2.85s)
+  logoRevealTimer = setTimeout(() => {
+    isLogoRevealed.value = true
+  }, 2850)
+
   pondDisplaceRef.value?.setAttribute('xChannelSelector', 'R')
   pondDisplaceRef.value?.setAttribute('yChannelSelector', 'G')
   logoDisplaceRef.value?.setAttribute('xChannelSelector', 'R')
@@ -433,11 +443,12 @@ onMounted(() => {
   resizeCanvas()
   window.addEventListener('resize', resizeCanvas, { passive: true })
 
+  // Ceremonial Golden Pond Wave Synced to Act 3 Countdown Entrance (5.35s)
   entranceRippleTimer = setTimeout(() => {
     if (!isVideoModalOpen.value) {
       spawnWaterWave(width * 0.5, height * 0.69, 1.2, true)
     }
-  }, 2950)
+  }, 5350)
 
   let compassRotation = 0
 
@@ -697,6 +708,7 @@ onUnmounted(() => {
   if (countdownInterval) clearInterval(countdownInterval)
   if (rafId !== null) cancelAnimationFrame(rafId)
   if (logoCeremonyTimer) clearTimeout(logoCeremonyTimer)
+  if (logoRevealTimer) clearTimeout(logoRevealTimer)
   if (entranceRippleTimer) clearTimeout(entranceRippleTimer)
 })
 </script>
@@ -816,18 +828,20 @@ onUnmounted(() => {
       <div class="sky-vignette absolute inset-0" />
     </div>
 
-    <!-- 2. Upper Sky Logo & Crisp Undistorted Character-by-Character Typography -->
+    <!-- 2. Upper Sky Identity: "SOMETHING IS COMING HOME" Animates First -> Logo Second -->
     <header
       class="relative z-20 flex flex-col items-center px-4 pt-[clamp(1.25rem,3.4dvh,2.5rem)] text-center"
     >
+      <!-- Act 2: Koduvayur Logo (Delayed to 2.75s, Slower 2.45s Emergence) -->
       <div class="parallax-logo">
         <div class="logo-entrance">
           <button
             ref="logoButtonRef"
             type="button"
-            data-cursor-interactive
+            :data-cursor-interactive="isLogoRevealed ? '' : undefined"
             aria-label="Koduvayur Ratholsavam emblem"
             class="logo-button relative bg-transparent p-0 focus:outline-none"
+            :class="isLogoRevealed ? 'pointer-events-auto' : 'pointer-events-none'"
             @click="triggerLogoCeremony"
             @pointerenter="isLogoHovered = true"
             @pointermove="handleLogoPointerMove"
@@ -864,6 +878,7 @@ onUnmounted(() => {
         </div>
       </div>
 
+      <!-- Act 1A: "SOMETHING IS COMING" Animates In First (0.32s) -->
       <p
         aria-label="Something Is Coming"
         class="parallax-eyebrow mt-[clamp(1.85rem,4.8dvh,3.6rem)] flex flex-wrap items-center justify-center font-sans text-[clamp(0.65rem,min(2.6vw,1.48dvh),0.88rem)] font-normal tracking-[0.38em] text-[#efe9dd]"
@@ -879,6 +894,7 @@ onUnmounted(() => {
         </span>
       </p>
 
+      <!-- Act 1B: Monumental H[O]ME Animates Immediately After Eyebrow (1.05s - 2.67s) -->
       <div class="parallax-home mt-[clamp(0.55rem,1.45dvh,1.15rem)] flex items-center justify-center">
         <h1 class="sr-only">Something Is Coming Home — Koduvayur Ratholsavam</h1>
 
@@ -888,7 +904,7 @@ onUnmounted(() => {
           <span
             aria-hidden="true"
             class="home-letter-reveal inline-block"
-            style="animation-delay: 1.48s"
+            style="animation-delay: 1.05s"
           >
             <span class="home-glyph-inner inline-block">H</span>
           </span>
@@ -896,7 +912,7 @@ onUnmounted(() => {
           <span
             ref="playAnchorRef"
             class="home-letter-reveal inline-flex items-center justify-center"
-            style="animation-delay: 1.66s"
+            style="animation-delay: 1.23s"
           >
             <button
               ref="playButtonRef"
@@ -979,7 +995,7 @@ onUnmounted(() => {
           <span
             aria-hidden="true"
             class="home-letter-reveal inline-block"
-            style="animation-delay: 1.84s"
+            style="animation-delay: 1.41s"
           >
             <span class="home-glyph-inner inline-block">M</span>
           </span>
@@ -987,7 +1003,7 @@ onUnmounted(() => {
           <span
             aria-hidden="true"
             class="home-letter-reveal inline-block"
-            style="animation-delay: 2.02s"
+            style="animation-delay: 1.59s"
           >
             <span class="home-glyph-inner inline-block">E</span>
           </span>
@@ -998,7 +1014,7 @@ onUnmounted(() => {
     <!-- 3. Open Temple & Living Pond Reflection Window -->
     <div class="pointer-events-none relative z-10" aria-hidden="true" />
 
-    <!-- 4. Bold Inter-700 Pond Countdown & Arrival -->
+    <!-- 4. Act 3: Pond Countdown & Arrival Animate In After Koduvayur Logo Completes (5.18s+) -->
     <footer
       class="parallax-footer relative z-20 flex flex-col items-center px-3 pb-[clamp(1.15rem,3dvh,2rem)] text-center sm:px-4"
     >
@@ -1010,7 +1026,7 @@ onUnmounted(() => {
       >
         <div
           class="countdown-unit-reveal flex min-w-[2.95rem] flex-col items-center sm:min-w-[5.1rem]"
-          style="animation-delay: 2.28s"
+          style="animation-delay: 5.18s"
         >
           <span class="countdown-digits">{{ countdown.days }}</span>
           <span class="countdown-label">Days</span>
@@ -1018,7 +1034,7 @@ onUnmounted(() => {
 
         <span
           class="countdown-unit-reveal countdown-colon"
-          style="animation-delay: 2.36s"
+          style="animation-delay: 5.26s"
           aria-hidden="true"
         >
           :
@@ -1026,7 +1042,7 @@ onUnmounted(() => {
 
         <div
           class="countdown-unit-reveal flex min-w-[2.95rem] flex-col items-center sm:min-w-[5.1rem]"
-          style="animation-delay: 2.44s"
+          style="animation-delay: 5.34s"
         >
           <span class="countdown-digits">{{ countdown.hours }}</span>
           <span class="countdown-label">Hours</span>
@@ -1034,7 +1050,7 @@ onUnmounted(() => {
 
         <span
           class="countdown-unit-reveal countdown-colon"
-          style="animation-delay: 2.52s"
+          style="animation-delay: 5.42s"
           aria-hidden="true"
         >
           :
@@ -1042,7 +1058,7 @@ onUnmounted(() => {
 
         <div
           class="countdown-unit-reveal flex min-w-[2.95rem] flex-col items-center sm:min-w-[5.1rem]"
-          style="animation-delay: 2.6s"
+          style="animation-delay: 5.5s"
         >
           <span class="countdown-digits">{{ countdown.minutes }}</span>
           <span class="countdown-label">Minutes</span>
@@ -1050,7 +1066,7 @@ onUnmounted(() => {
 
         <span
           class="countdown-unit-reveal countdown-colon"
-          style="animation-delay: 2.68s"
+          style="animation-delay: 5.58s"
           aria-hidden="true"
         >
           :
@@ -1058,7 +1074,7 @@ onUnmounted(() => {
 
         <div
           class="countdown-unit-reveal flex min-w-[2.95rem] flex-col items-center sm:min-w-[5.1rem]"
-          style="animation-delay: 2.76s"
+          style="animation-delay: 5.66s"
         >
           <span class="countdown-digits">{{ countdown.seconds }}</span>
           <span class="countdown-label">Seconds</span>
@@ -1209,10 +1225,11 @@ onUnmounted(() => {
     radial-gradient(ellipse at center, rgba(0, 0, 0, 0.1) 48%, rgba(0, 0, 0, 0.9) 100%);
 }
 
+/* Act 2: Delayed & Slower Same Logo Emergence (2.45s Duration after 2.75s Delay) */
 .logo-entrance {
   opacity: 0;
   will-change: transform, opacity;
-  animation: logoEmergence 1.6s cubic-bezier(0.22, 1, 0.36, 1) 0.22s forwards;
+  animation: logoEmergence 2.45s cubic-bezier(0.22, 1, 0.36, 1) 2.75s forwards;
 }
 
 @keyframes logoEmergence {
@@ -1350,7 +1367,7 @@ onUnmounted(() => {
   transition:
     stroke 0.5s ease,
     fill 0.5s ease;
-  animation: drawRomanO 1.35s cubic-bezier(0.22, 1, 0.36, 1) 1.7s forwards;
+  animation: drawRomanO 1.35s cubic-bezier(0.22, 1, 0.36, 1) 1.28s forwards;
 }
 
 @keyframes drawRomanO {
@@ -1362,7 +1379,7 @@ onUnmounted(() => {
 .o-triangle-reveal {
   opacity: 0;
   transform-origin: 50px 50px;
-  animation: triangleBloom 0.85s cubic-bezier(0.22, 1, 0.36, 1) 2.05s forwards;
+  animation: triangleBloom 0.85s cubic-bezier(0.22, 1, 0.36, 1) 1.62s forwards;
 }
 
 @keyframes triangleBloom {
