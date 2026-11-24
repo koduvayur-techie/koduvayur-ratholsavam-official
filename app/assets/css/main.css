@@ -1,38 +1,108 @@
-/* app/assets/css/main.css */
 @import "tailwindcss";
 
 @theme {
   --font-serif: "Cormorant Garamond", Georgia, serif;
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
-
-  --color-void: #000000;
-  --color-obsidian: #050505;
-  --color-ivory: #f4efe6;
-  --color-gold: #d4af6a;
-  --color-gold-muted: #b99b64;
-
-  --ease-silk: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-@layer base {
-  html,
-  body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    background-color: var(--color-void);
-    color: var(--color-ivory);
-    font-family: var(--font-sans);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    -webkit-tap-highlight-color: transparent;
-    overflow: hidden;
-    overscroll-behavior: none;
-  }
+:root {
+  /* Sacred Sandalwood Parchment & Burnished Temple-Brass Tokens */
+  --kr-bg: #f6f1e7;
+  --kr-bg-warm: #ede5d4;
+  --kr-surface: #fbf8f2;
+  --kr-surface-elevated: #ffffff;
+  --kr-ink: #23160d;
+  --kr-ink-secondary: #4e3b2c;
+  --kr-ink-muted: #78624e;
+  --kr-gold: #b58328;
+  --kr-gold-bright: #d9a94c;
+  --kr-gold-deep: #855b12;
+  --kr-border: rgba(133, 91, 18, 0.2);
+  --kr-border-strong: rgba(133, 91, 18, 0.42);
 
-  ::selection {
-    background-color: rgba(212, 175, 106, 0.22);
-    color: var(--color-ivory);
-  }
+  /* Centralized Motion Tokens */
+  --kr-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --kr-reveal-duration: 700ms;
+  --kr-reveal-distance: 22px;
+}
+
+html {
+  background-color: var(--kr-bg);
+  color: var(--kr-ink);
+  font-family: var(--font-sans);
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+}
+
+body {
+  min-height: 100dvh;
+  background-color: var(--kr-bg);
+  color: var(--kr-ink);
+  overflow-x: clip;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+::selection {
+  background-color: rgba(181, 131, 40, 0.24);
+  color: var(--kr-ink);
+}
+
+/* Lenis Scroll Base (Without Clipping Overlay Scroll Containers) */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+/* Sacred Double-Hairline Gallery Frame */
+.kr-sacred-frame {
+  position: relative;
+  background-color: #ebe1ce;
+  border: 1px solid var(--kr-border-strong);
+  box-shadow:
+    0 20px 44px -20px rgba(35, 22, 13, 0.22),
+    0 2px 8px rgba(35, 22, 13, 0.05);
+  transition:
+    border-color 360ms var(--kr-ease-out),
+    box-shadow 360ms var(--kr-ease-out);
+}
+
+.kr-sacred-frame:hover {
+  border-color: var(--kr-gold);
+  box-shadow:
+    0 24px 52px -18px rgba(35, 22, 13, 0.28),
+    0 4px 14px rgba(181, 131, 40, 0.14);
+}
+
+.kr-sacred-frame::after {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border: 1px solid rgba(181, 131, 40, 0.34);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Two-Phase Staggered Reveal Directive States (Zero Reduced-Motion Suppression) */
+.kr-reveal-init {
+  opacity: 0;
+  transform: translate3d(0, var(--kr-reveal-distance), 0);
+  transition: none !important;
+  will-change: opacity, transform;
+}
+
+.kr-reveal-in {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition:
+    opacity var(--kr-reveal-duration) var(--kr-ease-out) var(--kr-reveal-delay, 0ms),
+    transform var(--kr-reveal-duration) var(--kr-ease-out) var(--kr-reveal-delay, 0ms);
+  will-change: opacity, transform;
 }

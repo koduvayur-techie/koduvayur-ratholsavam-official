@@ -15,6 +15,7 @@
     "@nuxtjs/sitemap": "^9.1.0",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.1.0",
+    "lenis": "^1.3.1",
     "nuxt": "^4.6.4",
     "vue": "^3.5.45",
     "vue-router": "^5.4.0"
@@ -23,5 +24,13 @@
     "@tailwindcss/vite": "^4.3.5",
     "@types/node": "^26.6.6",
     "tailwindcss": "^4.3.5"
+  },
+  "overrides": {
+    "@vercel/analytics": {
+      "vue-router": "^5.4.0"
+    },
+    "@vercel/speed-insights": {
+      "vue-router": "^5.4.0"
+    }
   }
 }

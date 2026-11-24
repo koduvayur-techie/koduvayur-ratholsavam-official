@@ -531,12 +531,12 @@ onUnmounted(() => {
                 <span
                   class="font-sans text-[0.58rem] font-medium tracking-[0.3em] text-[#e5c483] uppercase sm:text-[0.62rem]"
                 >
-                  Koduvayur Ratholsavam
+                  Koduvayur Ratholsavam 2026
                 </span>
                 <span
                   class="mt-0.5 font-serif text-[0.95rem] italic tracking-[0.04em] text-[#f4efe6]/85 sm:text-[1.05rem]"
                 >
-                  The Arrival Preview
+                  Arrival
                 </span>
               </div>
 
