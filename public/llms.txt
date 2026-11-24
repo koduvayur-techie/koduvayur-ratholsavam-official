@@ -2,13 +2,22 @@
 
 > Official digital festival notice and schedule for Koduvayur Ratholsavam 2026 (December 24–25, 2026 / 1202 Dhanu 09, 10) at Sree Visalakshy Sametha Sree Viswanatha Swamy Temple, Koduvayur Keralapuram Agraharam, Palakkad, Kerala, India.
 
-- Canonical Website: https://koduvayur.in
-- Official Notice PDF: https://koduvayur.in/pdf/RAD2026.pdf
-- Temple Administration: Sree Viswanatha Swamy Temple (Malabar Devaswom Board)
-- Location: Koduvayur Keralapuram Agraharam, Koduvayur, Palakkad, Kerala 678501, India (10.6844, 76.6470)
-- Digital Partner: Brandsta Interactive (https://brandsta.in)
+## Official Resources & Navigation
+- [Koduvayur Ratholsavam 2026 Official Website](https://koduvayur.in/): Complete interactive schedule, committee roster, contribution details, and festival film.
+- [Official 2026 Festival Notice (PDF)](https://koduvayur.in/pdf/RAD2026.pdf): Printable English and Malayalam festival brochure and ritual timings.
+- [Festival Schedule (Dec 04 – Dec 23)](https://koduvayur.in/#festival-schedule): Muhurthakaal, Vasthuhomam, Dhwajarohanam, and six days of Utsavam Vahanam processions.
+- [Temple Special Events](https://koduvayur.in/#temple-special-events): Rudra Ekadashi, Sri Subramanya Homam, Mahapradosham, Thiru Kalyanam, Nadaswara Kacheri, and Ganga Arathi.
+- [Cultural Dance Events](https://koduvayur.in/#cultural-dance-events): Evening devotional dance and Thiruvathirakali performances (Dec 18–21).
+- [Ratholsavam Chariot Days (Dec 24 & 25)](https://koduvayur.in/#ratholsavam-chariot-days): Day One and Day Two sacred chariot procession timings across Koduvayur Agraharam.
+- [Mega Entertainment Events](https://koduvayur.in/#mega-entertainment-events): Gokula Street Bandset, Panchari Melam, and Pandi Melam ensembles.
+- [Post-Festival Events (Dec 26 – Dec 28)](https://koduvayur.in/#post-festival-events): Pallakku Kacheri, Kulatheru, Manjal Neerattu, Dhwajavarohanam, and Mahabhishekam.
+- [XML Sitemap](https://koduvayur.in/sitemap.xml): Search and agent index for koduvayur.in.
+- [Brandsta Interactive](https://brandsta.in/): Official digital branding and web engineering partner.
 
 ## Temple & Vedic Heritage
+- Temple Administration: Sree Viswanatha Swamy Temple (Malabar Devaswom Board)
+- Location: Koduvayur Keralapuram Agraharam, Koduvayur, Palakkad, Kerala 678501, India (10.6844, 76.6470)
+
 Koduvayur Keralapuram Agraharam is a historic Vedic village in Palakkad, Kerala, deeply connected to the Thillai Nataraja Temple in Chidambaram, Tamil Nadu. Skilled Vedic scholars and priests (Deekshidars) migrated from Chidambaram to Koduvayur, bringing rich yaga, yagna, and temple festival traditions.
 
 The presiding west-facing deity, Sree Viswanatha Swamy (a Kshatriya Shiva Linga originally brought from Kasi), is worshipped alongside consorts Sree Visalakshy and Meenakshi, as well as Ganesha, Subramania Swamy, Suryanarayanan, Dakshinamurthy, two Nandikeshwaras, eight Dikpalakas, and Chandikeswara.
@@ -49,7 +58,7 @@ Daily Vedaparayanam (morning and evening) and Rudrabhishekam followed by Deepara
   - 11:00 PM: Pandi Melam led by Mela Kalaratnam Kizhakkoot Aniyan Marar and 101+ percussionists
 - December 26, 2026 (Saturday): 2:30 AM — Pallakku Kacheri; 4:00 AM — Kulatheru followed by Mounavritham.
 - December 27, 2026 (Sunday): 9:00 AM — Manjal Neerattu; 7:00 PM — Dhwajavarohanam.
-- December 28, 2026 (Monday): 9:30 AM — Mahabhishekam.
+- December 28, 2026 (Monday): 9:00 AM — Mahabhishekam.
 
 ## Temple Priests & Ratholsava Committee Contacts
 - Temple Tantri: Sree Sivasree Ramkumar Sivacharyar
