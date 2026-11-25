@@ -136,7 +136,7 @@ export default defineNuxtConfig({
         { name: 'geo.position', content: '10.6844;76.6470' },
         { name: 'ICBM', content: '10.6844, 76.6470' },
 
-        { name: 'msapplication-TileColor', content: '#2a2a2a' },
+        { name: 'msapplication-TileColor', content: '#1a1a1a' },
         { name: 'msapplication-TileImage', content: '/images/favicons/ms-icon-144x144.png' },
         { name: 'theme-color', content: '#f6f1e7' },
         { name: 'msapplication-config', content: '/browserconfig.xml' },
@@ -187,8 +187,15 @@ export default defineNuxtConfig({
       ],
 
       link: [
-        { rel: 'canonical', href: 'https://koduvayur.in' },
-        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+        { key: 'canonical', rel: 'canonical', href: 'https://koduvayur.in' },
+        {
+          rel: 'preload',
+          as: 'image',
+          type: 'image/webp',
+          href: '/images/festival/rad-2026-cover.webp',
+          fetchpriority: 'high',
+        },
+        { rel: 'icon', type: 'image/x-icon', sizes: '32x32', href: '/favicon.ico' },
         { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/images/favicons/favicon-16x16.png' },
         { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/images/favicons/favicon-32x32.png' },
         { rel: 'icon', type: 'image/png', sizes: '96x96', href: '/images/favicons/favicon-96x96.png' },

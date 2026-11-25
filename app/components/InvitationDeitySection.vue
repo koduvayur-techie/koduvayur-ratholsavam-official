@@ -89,6 +89,7 @@ function handleDeityClick() {
             class="kr-sacred-frame group relative block aspect-square w-full overflow-hidden rounded-[3px] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--kr-gold)]"
             @click="handleDeityClick"
           >
+            <ImageExpandBadge size="md" />
             <img
               :src="invite.deityImage.src"
               :alt="invite.deityImage.alt"

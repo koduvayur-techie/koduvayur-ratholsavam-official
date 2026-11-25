@@ -69,10 +69,14 @@ const [
     <!-- 17. Sponsor Band 8 (5:2 WebP — 4 Ads) -->
     <SponsorLogoBand :band="SPONSOR_BANDS_2026.band8AfterPostEvents" />
 
-    <!-- 18. Closing Enquiries Link + Farewell Line ("...longing wait for the next Theru begins.") -->
+    <!-- 18. Adding Splendor to the Festivities (Light & Sound · Fireworks · Thirumanjanam Procession) -->
+    <FestivalSplendorSection />
+
+    <!-- 19. Closing Enquiries Link + Farewell Line ("...longing wait for the next Theru begins.") -->
     <FestivalClosingSection />
 
-    <!-- 19. Sponsor Band 9: Centered Single 3:1 WebP Strip (Prasanna Lakshmi Group) -->
+    <!-- 20. Sponsor Band 9: Centered Single 3:1 WebP Strip (Prasanna Lakshmi Group) -->
     <SponsorLogoBand :band="SPONSOR_BANDS_2026.band9ClosingSingle" />
+    
   </div>
 </template>

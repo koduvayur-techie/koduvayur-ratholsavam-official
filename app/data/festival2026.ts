@@ -35,19 +35,26 @@ export interface EssentialContactGroup {
   }[]
 }
 
+export interface SplendorCreditItem {
+  id: 'light-and-sound' | 'fireworks' | 'thirumanjanam-procession'
+  category: string
+  kicker?: string
+  name: string
+}
+
 /**
- * Live `.jpg` assets inside `public/images/festival/`.
+ * Live `.webp` assets inside `public/images/festival/`.
  */
 const USE_EVENT_PLACEHOLDERS = false
-const PLACEHOLDER_JPG = '/images/rad-pc.jpg'
+const PLACEHOLDER_IMG = '/images/rad-pc.jpg'
 
-function eventJpg(slug: string): string {
-  return USE_EVENT_PLACEHOLDERS ? PLACEHOLDER_JPG : `/images/festival/${slug}.jpg`
+function eventWebp(slug: string): string {
+  return USE_EVENT_PLACEHOLDERS ? PLACEHOLDER_IMG : `/images/festival/${slug}.webp`
 }
 
 export const FESTIVAL_2026_DATA = {
   header: {
-    logoSrc: '/images/rad26logo.png',
+    logoSrc: '/images/rad26logo.webp',
     logoAlt: 'Koduvayur Ratholsavam 2026',
     rupeeIconSrc: '',
   },
@@ -61,7 +68,7 @@ export const FESTIVAL_2026_DATA = {
       'Join us in Koduvayur Keralapuram Agraharam for the historic annual chariot festival of Sree Visalakshy Sametha Sree Viswanatha Swamy.',
     coverImage: {
       id: 'festival-01-hero-cover',
-      src: eventJpg('rad-2026-cover'),
+      src: eventWebp('rad-2026-cover'),
       alt: 'Koduvayur Ratholsavam temple chariots in Koduvayur Agraharam',
       caption: 'Koduvayur Ratholsavam · 24 & 25 Dec 2026 (1202 Dhanu 09, 10)',
       width: 1200,
@@ -94,7 +101,7 @@ export const FESTIVAL_2026_DATA = {
     ],
     deityImage: {
       id: 'festival-02-deity',
-      src: eventJpg('sivakataksham'),
+      src: eventWebp('sivakataksham'),
       alt: 'Sree Visalakshy Sametha Sree Viswanatha Swamy',
       caption: 'Sree Visalakshy Sametha Sree Viswanatha Swamy',
       width: 800,
@@ -131,7 +138,7 @@ export const FESTIVAL_2026_DATA = {
     noticePanels: [
       {
         id: 'festival-03-committee-en',
-        src: eventJpg('rad26-team-en'),
+        src: eventWebp('rad26-team-en'),
         alt: 'Ratholsava Committee 2026 — English Official Roster',
         caption: 'Ratholsava Committee 2026 · English Roster',
         width: 800,
@@ -140,7 +147,7 @@ export const FESTIVAL_2026_DATA = {
       },
       {
         id: 'festival-04-committee-ml',
-        src: eventJpg('rad26-team-mal'),
+        src: eventWebp('rad26-team-mal'),
         alt: 'Ratholsava Committee 2026 — Malayalam Official Roster',
         caption: 'Ratholsava Committee 2026 · Malayalam Roster',
         width: 800,
@@ -165,7 +172,7 @@ export const FESTIVAL_2026_DATA = {
       slides: [
         {
           id: 'festival-05-muhurthakaal',
-          src: eventJpg('muhurthakaal'),
+          src: eventWebp('muhurthakaal'),
           alt: '04 Dec Morning 8:00 AM — Muhurthakaal Ceremony',
           caption: '04 Dec · 8:00 AM — Muhurthakaal Ceremony',
           width: 800,
@@ -173,7 +180,7 @@ export const FESTIVAL_2026_DATA = {
         },
         {
           id: 'festival-06-vasthuhomam',
-          src: eventJpg('gramasanthi'),
+          src: eventWebp('gramasanthi'),
           alt: '17 Dec Night 11:00 PM — Vasthuhomam followed by Gramasanthi',
           caption: '17 Dec · 11:00 PM — Vasthuhomam & Gramasanthi',
           width: 800,
@@ -181,7 +188,7 @@ export const FESTIVAL_2026_DATA = {
         },
         {
           id: 'festival-07-dhwajarohanam',
-          src: eventJpg('dhwajarohanam'),
+          src: eventWebp('dhwajarohanam'),
           alt: '18 Dec Utsavam Day 1 Morning 7:15 AM to 8:30 AM — Dhwajarohanam',
           caption: '18 Dec · Utsavam Day 1 — Dhwajarohanam (7:15 AM – 8:30 AM)',
           width: 800,
@@ -189,7 +196,7 @@ export const FESTIVAL_2026_DATA = {
         },
         {
           id: 'festival-08-utsavam-day1',
-          src: eventJpg('day-1'),
+          src: eventWebp('day-1'),
           alt: '18 Dec Utsavam Day 1 Night 9:30 PM — Kamadhenu Vahanam Procession',
           caption: '18 Dec · Utsavam Day 1 — Kamadhenu Vahanam Procession (9:30 PM)',
           width: 800,
@@ -197,7 +204,7 @@ export const FESTIVAL_2026_DATA = {
         },
         {
           id: 'festival-09-utsavam-day2',
-          src: eventJpg('day-2'),
+          src: eventWebp('day-2'),
           alt: '19 Dec Utsavam Day 2 — Bootha Vahanam Procession',
           caption: '19 Dec · Utsavam Day 2 — Bootha Vahanam Procession (9:30 PM)',
           width: 800,
@@ -205,7 +212,7 @@ export const FESTIVAL_2026_DATA = {
         },
         {
           id: 'festival-10-utsavam-day3',
-          src: eventJpg('day-3'),
+          src: eventWebp('day-3'),
           alt: '20 Dec Utsavam Day 3 — Kuthira Vahanam Procession',
           caption: '20 Dec · Utsavam Day 3 — Kuthira Vahanam Procession (9:30 PM)',
           width: 800,
@@ -213,7 +220,7 @@ export const FESTIVAL_2026_DATA = {
         },
         {
           id: 'festival-11-utsavam-day4',
-          src: eventJpg('day-4'),
+          src: eventWebp('day-4'),
           alt: '21 Dec Utsavam Day 4 — Kailasam Vahanam Procession',
           caption: '21 Dec · Utsavam Day 4 — Kailasam Vahanam Procession (9:30 PM)',
           width: 800,
@@ -221,7 +228,7 @@ export const FESTIVAL_2026_DATA = {
         },
         {
           id: 'festival-12-utsavam-day5',
-          src: eventJpg('day-5'),
+          src: eventWebp('day-5'),
           alt: '22 Dec Utsavam Day 5 — Rishaba Vahanam Procession',
           caption: '22 Dec · Utsavam Day 5 — Rishaba Vahanam Procession (10:30 PM)',
           width: 800,
@@ -229,7 +236,7 @@ export const FESTIVAL_2026_DATA = {
         },
         {
           id: 'festival-13-utsavam-day6',
-          src: eventJpg('day-6'),
+          src: eventWebp('day-6'),
           alt: '23 Dec Utsavam Day 6 — Aana Vahanam Procession',
           caption: '23 Dec · Utsavam Day 6 — Aana Vahanam Procession (9:00 PM)',
           width: 800,
@@ -247,7 +254,7 @@ export const FESTIVAL_2026_DATA = {
       slides: [
         {
           id: 'festival-14-rudra-ekadashi',
-          src: eventJpg('rudraekadashi'),
+          src: eventWebp('rudraekadashi'),
           alt: '19 Dec Morning 8:00 AM — Rudra Ekadashi',
           caption: '19 Dec · 8:00 AM — Rudra Ekadashi',
           width: 800,
@@ -255,7 +262,7 @@ export const FESTIVAL_2026_DATA = {
         },
         {
           id: 'festival-15-subramanya-homam',
-          src: eventJpg('subramanyahomam'),
+          src: eventWebp('subramanyahomam'),
           alt: '20 Dec Morning 8:00 AM — Sri Subramanya Homam',
           caption: '20 Dec · 8:00 AM — Sri Subramanya Homam',
           width: 800,
@@ -263,7 +270,7 @@ export const FESTIVAL_2026_DATA = {
         },
         {
           id: 'festival-16-mahapradosham',
-          src: eventJpg('mahapradosham'),
+          src: eventWebp('mahapradosham'),
           alt: '21 Dec Afternoon 3:00 PM — Mahapradosham',
           caption: '21 Dec · 3:00 PM — Mahapradosham',
           width: 800,
@@ -271,7 +278,7 @@ export const FESTIVAL_2026_DATA = {
         },
         {
           id: 'festival-17-thiru-kalyanam',
-          src: eventJpg('kalyanotsavam'),
+          src: eventWebp('kalyanotsavam'),
           alt: '22 Dec Morning 8:00 AM — Shiva Parvathi Thiru Kalyanam',
           caption: '22 Dec · 8:00 AM — Shiva Parvathi Thiru Kalyanam · Erode Rajamani Bhagavathar & Party',
           width: 800,
@@ -279,7 +286,7 @@ export const FESTIVAL_2026_DATA = {
         },
         {
           id: 'festival-18-nadaswara-kacheri',
-          src: eventJpg('nadaswaram'),
+          src: eventWebp('nadaswaram'),
           alt: '22 Dec Night 10:30 PM — Special Nadaswara Kacheri',
           caption: '22 Dec · 10:30 PM — Special Nadaswara Kacheri · Pazhani Manikandan, Pazhani Sivakumar & Party',
           width: 800,
@@ -287,7 +294,7 @@ export const FESTIVAL_2026_DATA = {
         },
         {
           id: 'festival-19-ganga-arathi',
-          src: eventJpg('ganga-aarathi'),
+          src: eventWebp('ganga-aarathi'),
           alt: '23 Dec Night 7:30 PM — Ganga Arathi at Viswanatha Swamy Temple Pond',
           caption: '23 Dec · 7:30 PM — Ganga Arathi at Viswanatha Swamy Temple Pond',
           width: 800,
@@ -305,7 +312,7 @@ export const FESTIVAL_2026_DATA = {
       slides: [
         {
           id: 'festival-20-dance-day1',
-          src: eventJpg('dance-1'),
+          src: eventWebp('dance-1'),
           alt: '18 Dec Dance Performance — Kalaivani Group, Sivasakthi Group & Natyakalakshetra Group',
           caption: '18 Dec · 5:45 PM — Dance Performance · Kalaivani Group, Sivasakthi Group & Natyakalakshetra Group',
           width: 800,
@@ -313,7 +320,7 @@ export const FESTIVAL_2026_DATA = {
         },
         {
           id: 'festival-21-dance-day2',
-          src: eventJpg('dance-2'),
+          src: eventWebp('dance-2'),
           alt: '19 Dec Dance Performance — Devi Group, Souparnika Nrithakalalayam & Sivasakthi Nrithakalalayam',
           caption: '19 Dec · 5:45 PM — Dance Performance · Devi Group, Souparnika Nrithakalalayam & Sivasakthi Nrithakalalayam',
           width: 800,
@@ -321,7 +328,7 @@ export const FESTIVAL_2026_DATA = {
         },
         {
           id: 'festival-22-dance-day3',
-          src: eventJpg('dance-3'),
+          src: eventWebp('dance-3'),
           alt: '20 Dec Dance Performance — Mazhamariyamman Group, Krishnapriya Nandan & Chilanka Dance Academy',
           caption: '20 Dec · 5:45 PM — Dance Performance · Mazhamariyamman Group, Krishnapriya Nandan & Chilanka Dance Academy',
           width: 800,
@@ -329,7 +336,7 @@ export const FESTIVAL_2026_DATA = {
         },
         {
           id: 'festival-23-dance-day4',
-          src: eventJpg('dance-4'),
+          src: eventWebp('dance-4'),
           alt: '21 Dec Thiruvathirakali Dance Performance — Natyajyothi Nrithakalalayam, Kausthubham Group & Layam Group',
           caption: '21 Dec · 5:45 PM — Dance Performance (Thiruvathirakali) · Natyajyothi Nrithakalalayam, Kausthubham Group & Layam Group',
           width: 800,
@@ -347,7 +354,7 @@ export const FESTIVAL_2026_DATA = {
       slides: [
         {
           id: 'festival-24-ratholsavam-day1',
-          src: eventJpg('rad-day-1'),
+          src: eventWebp('rad-day-1'),
           alt: '24 Dec Ratholsavam Day 1 — First Chariot Day',
           caption: '24 Dec · Ratholsavam Day 1 — Poornabhishekam, Ardhra Darshanam, Radharohanam & Grama Pradakshinam',
           width: 800,
@@ -355,7 +362,7 @@ export const FESTIVAL_2026_DATA = {
         },
         {
           id: 'festival-25-ratholsavam-day2',
-          src: eventJpg('rad-day-2'),
+          src: eventWebp('rad-day-2'),
           alt: '25 Dec Ratholsavam Day 2 — Second Chariot Day',
           caption: '25 Dec · Ratholsavam Day 2 — Gokula Street Chariot Pooja, Procession & Fireworks',
           width: 800,
@@ -373,7 +380,7 @@ export const FESTIVAL_2026_DATA = {
       slides: [
         {
           id: 'festival-26-gokula-bandset',
-          src: eventJpg('bandset'),
+          src: eventWebp('bandset'),
           alt: '22 Dec Night 7:00 PM — Gokula Street Bandset by Ragadeepam Mundathikode',
           caption: '22 Dec · 7:00 PM — Gokula Street Bandset · Ragadeepam Mundathikode (Team Altharakoottam)',
           width: 800,
@@ -381,7 +388,7 @@ export const FESTIVAL_2026_DATA = {
         },
         {
           id: 'festival-27-panchari-melam',
-          src: eventJpg('panjarimelam'),
+          src: eventWebp('panjarimelam'),
           alt: '24 Dec Night 7:00 PM — Panchari Melam led by Pazhuvil Raghu Marar',
           caption: '24 Dec · 7:00 PM — Panchari Melam · Pazhuvil Raghu Marar & Ensemble',
           width: 800,
@@ -389,7 +396,7 @@ export const FESTIVAL_2026_DATA = {
         },
         {
           id: 'festival-28-pandi-melam',
-          src: eventJpg('pandimelam'),
+          src: eventWebp('pandimelam'),
           alt: '25 Dec Night 11:00 PM — Pandi Melam led by Kizhakkoot Aniyan Marar',
           caption: '25 Dec · 11:00 PM — Pandi Melam · Kizhakkoot Aniyan Marar & 101+ Artists',
           width: 800,
@@ -407,7 +414,7 @@ export const FESTIVAL_2026_DATA = {
       slides: [
         {
           id: 'festival-29-pallakku-kulatheru',
-          src: eventJpg('kulatheru'),
+          src: eventWebp('kulatheru'),
           alt: '26 Dec Early Morning — Pallakku Kacheri, Kulatheru & Mounavritham',
           caption: '26 Dec · 2:30 AM Pallakku Kacheri · 4:00 AM Kulatheru & Mounavritham',
           width: 800,
@@ -415,7 +422,7 @@ export const FESTIVAL_2026_DATA = {
         },
         {
           id: 'festival-30-manjal-neerattu',
-          src: eventJpg('manjalneerattu'),
+          src: eventWebp('manjalneerattu'),
           alt: '27 Dec Morning 9:00 AM — Manjal Neerattu',
           caption: '27 Dec · 9:00 AM — Manjal Neerattu',
           width: 800,
@@ -423,7 +430,7 @@ export const FESTIVAL_2026_DATA = {
         },
         {
           id: 'festival-31-dhwajavarohanam',
-          src: eventJpg('dhwajavarohanam'),
+          src: eventWebp('dhwajavarohanam'),
           alt: '27 Dec Night 7:00 PM — Dhwajavarohanam',
           caption: '27 Dec · 7:00 PM — Dhwajavarohanam',
           width: 800,
@@ -431,7 +438,7 @@ export const FESTIVAL_2026_DATA = {
         },
         {
           id: 'festival-32-mahabhishekam',
-          src: eventJpg('mahabhishekam'),
+          src: eventWebp('mahabhishekam'),
           alt: '28 Dec Morning 9:30 AM — Mahabhishekam',
           caption: '28 Dec · 9:30 AM — Mahabhishekam',
           width: 800,
@@ -440,6 +447,29 @@ export const FESTIVAL_2026_DATA = {
       ],
     },
   ] satisfies EventCategoryGroup[],
+
+  splendor: {
+    eyebrow: 'Procession · Illumination · Pyrotechnics',
+    title: 'Adding Splendor to the Festivities',
+    items: [
+      {
+        id: 'light-and-sound',
+        category: 'Light & Sound',
+        name: 'Devanza Events & Raja Sound',
+      },
+      {
+        id: 'fireworks',
+        category: 'Fireworks',
+        name: 'Satheesh Nemmara',
+      },
+      {
+        id: 'thirumanjanam-procession',
+        category: 'Thirumanjanam Procession',
+        kicker: 'Presenting',
+        name: 'Yuvarajakesari Kelasheri Kannan',
+      },
+    ] satisfies SplendorCreditItem[],
+  },
 
   closingSection: {
     enquiryText:
@@ -459,6 +489,7 @@ export const FESTIVAL_2026_DATA = {
     ifscCode: 'FDRL0001885',
     upiId: 'rathothsava2022@fbl',
     qrImageSrc: '/images/rad26-qr.jpg',
+    qrImageAlt: 'Koduvayur Ratholsavam 2026 Federal Bank UPI QR Code (rathothsava2022@fbl)',
     intimationPhones: ['8281177167', '8129779158'],
     intimationEmail: 'koduvayurratholsavam@gmail.com',
   },
@@ -500,7 +531,7 @@ export const FESTIVAL_2026_DATA = {
 } as const
 
 /**
- * Stream 1 — Festival Gallery Sequence (32 JPG Slides):
+ * Stream 1 — Festival Gallery Sequence (32 WebP Slides):
  * Cover -> Deity -> English Committee -> Malayalam Committee -> 6 Event Categories in Chronological Order.
  */
 export const MASTER_LIGHTBOX_SEQUENCE: LightboxImageItem[] = [

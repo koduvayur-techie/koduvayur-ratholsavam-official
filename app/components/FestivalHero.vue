@@ -117,13 +117,13 @@ function handleCoverClick() {
             type="button"
             data-cursor-interactive
             aria-label="View festival cover photograph in full screen"
-            class="kr-sacred-frame kr-hero-frame group block w-full overflow-hidden rounded-[3px] text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--kr-gold)]"
+            class="kr-sacred-frame kr-hero-frame group relative block w-full overflow-hidden rounded-[3px] text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--kr-gold)]"
             @click="handleCoverClick"
           >
             <span class="kr-corner-dot top-3 left-3" aria-hidden="true" />
-            <span class="kr-corner-dot top-3 right-3" aria-hidden="true" />
             <span class="kr-corner-dot right-3 bottom-3" aria-hidden="true" />
             <span class="kr-corner-dot bottom-3 left-3" aria-hidden="true" />
+            <ImageExpandBadge size="md" />
 
             <img
               :src="heroData.coverImage.src"

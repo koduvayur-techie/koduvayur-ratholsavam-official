@@ -14,6 +14,9 @@ const trackRef = ref<HTMLElement | null>(null)
 const scrubRailRef = ref<HTMLElement | null>(null)
 const isScrubbingRail = ref(false)
 
+let cachedRailLeft = 0
+let cachedRailWidth = 1
+
 const isPairCategory = computed(() => props.category.slides.length === 2)
 
 const slideCountClass = computed(() => {
@@ -42,6 +45,10 @@ const {
   shouldSuppressClick,
 } = useKineticSlider(viewportRef, trackRef)
 
+const clampedProgress = computed(() =>
+  Math.min(1, Math.max(0, scrollProgress.value)),
+)
+
 function handleCardClick(slideId: string, e: MouseEvent) {
   if (shouldSuppressClick()) {
     e.preventDefault()
@@ -58,28 +65,31 @@ function handleFallbackError(e: Event) {
   }
 }
 
-function updateRailScrub(clientX: number) {
-  const rail = scrubRailRef.value
-  if (!rail) return
-  const rect = rail.getBoundingClientRect()
-  const ratio = (clientX - rect.left) / Math.max(1, rect.width)
+function applyCachedRailScrub(clientX: number) {
+  const ratio = Math.min(1, Math.max(0, (clientX - cachedRailLeft) / cachedRailWidth))
   scrubToRatio(ratio)
 }
 
 function handleRailPointerDown(e: PointerEvent) {
   const rail = scrubRailRef.value
   if (!rail || !isScrollable.value) return
+  if (e.pointerType === 'mouse' && e.button !== 0) return
+
+  const rect = rail.getBoundingClientRect()
+  cachedRailLeft = rect.left
+  cachedRailWidth = Math.max(1, rect.width)
+
   isScrubbingRail.value = true
   rail.setPointerCapture(e.pointerId)
-  updateRailScrub(e.clientX)
+  applyCachedRailScrub(e.clientX)
 }
 
 function handleRailPointerMove(e: PointerEvent) {
   if (!isScrubbingRail.value) return
-  updateRailScrub(e.clientX)
+  applyCachedRailScrub(e.clientX)
 }
 
-function handleRailPointerUp(e: PointerEvent) {
+function finishRailScrub(e: PointerEvent) {
   if (!isScrubbingRail.value) return
   const rail = scrubRailRef.value
   if (rail && rail.hasPointerCapture(e.pointerId)) {
@@ -93,7 +103,7 @@ function handleRailPointerUp(e: PointerEvent) {
 <template>
   <section :id="props.category.id" class="border-b border-[var(--kr-border)]">
     <div class="mx-auto max-w-7xl px-4 py-11 sm:px-6 sm:py-14 lg:px-10 lg:py-16">
-      <!-- Decorated Category Header + Option A Counter & Prev/Next Controls -->
+      <!-- Decorated Category Header + Counter & Prev/Next Controls -->
       <div class="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
         <div class="min-w-0 flex-1">
           <SectionHeading
@@ -150,9 +160,9 @@ function handleRailPointerUp(e: PointerEvent) {
         ref="viewportRef"
         v-reveal="{ delay: 90 }"
         role="region"
-        tabindex="0"
+        :tabindex="isScrollable ? 0 : -1"
         :aria-label="`${props.category.title} gallery slider`"
-        class="kr-slider-viewport mt-7 overflow-hidden py-2 select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--kr-gold)] sm:mt-8"
+        class="kr-slider-viewport -mx-0.5 mt-7 overflow-hidden px-0.5 py-2 select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--kr-gold)] sm:mt-8"
         :class="[
           isPairCategory ? 'kr-viewport--pair' : '',
           isScrollable ? (isDragging ? 'cursor-grabbing' : 'cursor-grab') : '',
@@ -163,7 +173,7 @@ function handleRailPointerUp(e: PointerEvent) {
         <div
           ref="trackRef"
           class="kr-slider-track flex items-start"
-          :class="slideCountClass"
+          :class="[slideCountClass, isScrollable ? 'kr-slider-track--kinetic' : '']"
         >
           <button
             v-for="slide in props.category.slides"
@@ -176,6 +186,7 @@ function handleRailPointerUp(e: PointerEvent) {
             @click="handleCardClick(slide.id, $event)"
             @dragstart.prevent
           >
+            <ImageExpandBadge size="md" />
             <img
               :src="slide.src"
               :alt="slide.alt"
@@ -205,23 +216,24 @@ function handleRailPointerUp(e: PointerEvent) {
           :aria-label="`Scrub ${props.category.title} timeline`"
           :aria-valuemin="0"
           :aria-valuemax="100"
-          :aria-valuenow="Math.round(scrollProgress * 100)"
-          class="group relative flex h-5 flex-1 touch-none items-center"
+          :aria-valuenow="Math.round(clampedProgress * 100)"
+          class="group relative mx-1.5 flex h-6 flex-1 cursor-pointer touch-none items-center"
           @pointerdown="handleRailPointerDown"
           @pointermove="handleRailPointerMove"
-          @pointerup="handleRailPointerUp"
-          @pointercancel="handleRailPointerUp"
+          @pointerup="finishRailScrub"
+          @pointercancel="finishRailScrub"
+          @lostpointercapture="finishRailScrub"
         >
           <div class="relative h-[2px] w-full overflow-hidden rounded-full bg-[var(--kr-border-strong)]/45 transition-all duration-200 group-hover:h-[3px]">
             <div
-              class="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-[var(--kr-gold-deep)] via-[var(--kr-gold)] to-[var(--kr-gold-bright)]"
-              :style="{ width: `${Math.max(8, scrollProgress * 100)}%` }"
+              class="h-full w-full origin-left rounded-full bg-gradient-to-r from-[var(--kr-gold-deep)] via-[var(--kr-gold)] to-[var(--kr-gold-bright)]"
+              :style="{ transform: `scaleX(${clampedProgress})` }"
             />
           </div>
 
           <span
             class="pointer-events-none absolute top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rotate-45 border border-[var(--kr-gold-deep)] bg-[var(--kr-surface-elevated)] shadow-2xs transition-transform duration-200 group-hover:scale-125"
-            :style="{ left: `${scrollProgress * 100}%` }"
+            :style="{ left: `${clampedProgress * 100}%` }"
             aria-hidden="true"
           />
         </div>
@@ -255,6 +267,9 @@ function handleRailPointerUp(e: PointerEvent) {
 .kr-slider-track {
   --kr-slide-gap: 1rem;
   gap: var(--kr-slide-gap);
+}
+
+.kr-slider-track--kinetic {
   will-change: transform;
 }
 
@@ -292,6 +307,19 @@ function handleRailPointerUp(e: PointerEvent) {
   .kr-track--trio .kr-slider-card,
   .kr-track--multi .kr-slider-card {
     width: calc((100% - var(--kr-slide-gap) * 2) / 2.68);
+  }
+}
+
+/* Auto-Rotated Mobile Landscape (< 1024px width & short height): Fit posters inside viewport height */
+@media (max-width: 1023.98px) and (max-height: 540px) and (orientation: landscape) {
+  .kr-viewport--pair {
+    max-width: min(100%, calc((100dvh - 6.5rem) * 1.65));
+    margin-inline: auto;
+  }
+
+  .kr-track--trio .kr-slider-card,
+  .kr-track--multi .kr-slider-card {
+    width: calc((100% - var(--kr-slide-gap) * 3) / 3.35);
   }
 }
 

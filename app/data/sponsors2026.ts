@@ -21,18 +21,18 @@ export interface SponsorBandGroup {
 }
 
 /**
- * Live `.jpg` thumbnails and full ads inside
+ * Live `.webp` thumbnails and full ads inside
  * `public/images/sponsors/thumb/` and `public/images/sponsors/full/`.
  */
 const USE_SPONSOR_PLACEHOLDERS = false
 const PLACEHOLDER_IMG = '/images/rad-pc.jpg'
 
-function thumbJpg(filename: string): string {
-  return USE_SPONSOR_PLACEHOLDERS ? PLACEHOLDER_IMG : `/images/sponsors/thumb/${filename}.jpg`
+function thumbWebp(filename: string): string {
+  return USE_SPONSOR_PLACEHOLDERS ? PLACEHOLDER_IMG : `/images/sponsors/thumb/${filename}.webp`
 }
 
-function adJpg(filename: string): string {
-  return USE_SPONSOR_PLACEHOLDERS ? PLACEHOLDER_IMG : `/images/sponsors/full/${filename}.jpg`
+function adWebp(filename: string): string {
+  return USE_SPONSOR_PLACEHOLDERS ? PLACEHOLDER_IMG : `/images/sponsors/full/${filename}.webp`
 }
 
 function createSponsor(
@@ -47,10 +47,10 @@ function createSponsor(
   return {
     id: `sponsor-${num}-${slug}`,
     name,
-    thumbSrc: thumbJpg(thumbFile),
+    thumbSrc: thumbWebp(thumbFile),
     thumbWidth: thumbSize[0],
     thumbHeight: thumbSize[1],
-    adSrc: adJpg(adFile),
+    adSrc: adWebp(adFile),
     adWidth: adSize[0],
     adHeight: adSize[1],
   }
@@ -83,7 +83,7 @@ export const SPONSOR_BANDS_2026 = {
     ],
   } satisfies SponsorBandGroup,
 
-  // Band 2: After Committee, Before Daily Rituals & Festival Schedule (4 Standard 5:2 Ads · 600x240 Thumbs)
+  // Band 2: After Committee, Before Daily Rituals & Festival Schedule (4 Standard 5:2 Ads · 400x160 Thumbs)
   band2AfterCommittee: {
     id: 'sponsors-band-2',
     variant: 'standard',
@@ -93,8 +93,8 @@ export const SPONSOR_BANDS_2026 = {
         'pulse-medical-centre',
         'Pulse Medical Centre · Koduvayur',
         'pulseclinic',
-        [600, 240],
-        'pulse',
+        [400, 160],
+        'PulseClinic',
         [1000, 651],
       ),
       createSponsor(
@@ -102,7 +102,7 @@ export const SPONSOR_BANDS_2026 = {
         'sulekha-auditorium',
         'Sulekha Auditorium · Koduvayur',
         'sulekhaauditorium',
-        [600, 240],
+        [400, 160],
         'Sulekha',
         [1000, 647],
       ),
@@ -111,7 +111,7 @@ export const SPONSOR_BANDS_2026 = {
         'uk-agencies',
         'U.K. Agencies · Cement & Steel, Koduvayur',
         'ukagencies',
-        [600, 240],
+        [400, 160],
         'UKAgencies',
         [1000, 591],
       ),
@@ -120,14 +120,14 @@ export const SPONSOR_BANDS_2026 = {
         'usha-harish-masai-mara',
         'Mara Siligi Camp & Usha Harish Photography',
         'ushaharishmarasiligi',
-        [600, 240],
+        [400, 160],
         'UshaHarish',
         [1000, 591],
       ),
     ],
   } satisfies SponsorBandGroup,
 
-  // Band 3: After Festival Schedule, Before Temple Special Events (4 Standard 5:2 Ads · 600x240 Thumbs)
+  // Band 3: After Festival Schedule, Before Temple Special Events (4 Standard 5:2 Ads · 400x160 Thumbs)
   band3AfterSchedule: {
     id: 'sponsors-band-3',
     variant: 'standard',
@@ -137,7 +137,7 @@ export const SPONSOR_BANDS_2026 = {
         'skandavel-seva-kada',
         'Skandavel Seva Kada · Koduvayur',
         'skandavelseva',
-        [600, 240],
+        [400, 160],
         'SkandavelSeva',
         [1000, 591],
       ),
@@ -146,7 +146,7 @@ export const SPONSOR_BANDS_2026 = {
         'sree-mookambika-transport',
         'Sree Mookambika Transport · Packers & Movers',
         'mookambikatransport',
-        [600, 240],
+        [400, 160],
         'MookambikaTransport',
         [1000, 591],
       ),
@@ -155,8 +155,8 @@ export const SPONSOR_BANDS_2026 = {
         'sree-gold-loan',
         'Sree Gold Loan & Fin Solutions · Koduvayur',
         'sreegoldloan',
-        [600, 240],
-        'sreegoldloan',
+        [400, 160],
+        'SreeGoldLoan',
         [1000, 666],
       ),
       createSponsor(
@@ -164,14 +164,14 @@ export const SPONSOR_BANDS_2026 = {
         'lakshmi-tiles',
         'Lakshmi Tiles & Sanitary Ware · Koduvayur',
         'lakshmitiles',
-        [600, 240],
+        [400, 160],
         'LakshmiTiles',
         [1000, 591],
       ),
     ],
   } satisfies SponsorBandGroup,
 
-  // Band 4: After Temple Special Events, Before Cultural Dance Events (4 Standard 5:2 Ads · 600x240 Thumbs)
+  // Band 4: After Temple Special Events, Before Cultural Dance Events (4 Standard 5:2 Ads · 400x160 Thumbs)
   band4AfterTempleSpecial: {
     id: 'sponsors-band-4',
     variant: 'standard',
@@ -181,7 +181,7 @@ export const SPONSOR_BANDS_2026 = {
         'time-kids-preschool',
         'T.I.M.E. Kids Pre-School · Thannissery',
         'timekids',
-        [600, 240],
+        [400, 160],
         'TimeKids',
         [1000, 591],
       ),
@@ -190,7 +190,7 @@ export const SPONSOR_BANDS_2026 = {
         'vedha-pooja-store',
         'Vedha Pooja Store · Gramapeedika, Koduvayur',
         'vedhapoojastore',
-        [600, 240],
+        [400, 160],
         'VedhaPooja',
         [1000, 647],
       ),
@@ -199,7 +199,7 @@ export const SPONSOR_BANDS_2026 = {
         'amrutha-jewellery',
         'Amrutha Jewellery · Main Road, Koduvayur',
         'amrithajewellery',
-        [600, 240],
+        [400, 160],
         'AmrithaJewellery',
         [1000, 646],
       ),
@@ -208,14 +208,14 @@ export const SPONSOR_BANDS_2026 = {
         'galaxy-health-insurance',
         'Galaxy Health Insurance · Palakkad',
         'galaxyinsurance',
-        [600, 240],
+        [400, 160],
         'GalaxyInsurance',
         [1000, 591],
       ),
     ],
   } satisfies SponsorBandGroup,
 
-  // Band 5: After Cultural Dance Events, Before Ratholsavam Day 1 & 2 (4 Standard 5:2 Ads · 600x240 Thumbs)
+  // Band 5: After Cultural Dance Events, Before Ratholsavam Day 1 & 2 (4 Standard 5:2 Ads · 400x160 Thumbs)
   band5AfterDance: {
     id: 'sponsors-band-5',
     variant: 'standard',
@@ -225,7 +225,7 @@ export const SPONSOR_BANDS_2026 = {
         'keya-foods',
         'Keya Foods · Gourmet Kitchen Essentials',
         'keyafoods',
-        [600, 240],
+        [400, 160],
         'KeyaFoods',
         [1000, 647],
       ),
@@ -234,7 +234,7 @@ export const SPONSOR_BANDS_2026 = {
         'haridra-catering',
         'Haridra Catering & Event Management · Old Kalpathy',
         'haridra',
-        [600, 240],
+        [400, 160],
         'HaridraCatering',
         [1000, 591],
       ),
@@ -243,7 +243,7 @@ export const SPONSOR_BANDS_2026 = {
         'sree-lakshmi-agencies',
         'Sree Lakshmi Agencies · Koduvayur & Pittupeedika',
         'sreelakshmiagencies',
-        [600, 240],
+        [400, 160],
         'SreeLakshmiAgencies',
         [1000, 591],
       ),
@@ -252,14 +252,14 @@ export const SPONSOR_BANDS_2026 = {
         'meenakshi-paint-house',
         'Meenakshi Paint House & Hardware · Koduvayur',
         'meenakshigroup',
-        [600, 240],
+        [400, 160],
         'MeenakshiGroup',
         [1000, 591],
       ),
     ],
   } satisfies SponsorBandGroup,
 
-  // Band 6: After Ratholsavam Day 1 & 2, Before Mega Entertainment Events (4 Standard 5:2 Ads · 600x240 Thumbs)
+  // Band 6: After Ratholsavam Day 1 & 2, Before Mega Entertainment Events (4 Standard 5:2 Ads · 400x160 Thumbs)
   band6AfterRatholsavam: {
     id: 'sponsors-band-6',
     variant: 'standard',
@@ -269,7 +269,7 @@ export const SPONSOR_BANDS_2026 = {
         'ksp-iyyer-special',
         'KSP Iyyer Special · Sweets & Savouries, Koduvayur',
         'kspiyyerspecial',
-        [600, 240],
+        [400, 160],
         'KSPIyyerSpecial',
         [1000, 314],
       ),
@@ -278,7 +278,7 @@ export const SPONSOR_BANDS_2026 = {
         'royal-granites',
         'Royal Granites · Palakkad Road, Koduvayur',
         'royalgranites',
-        [600, 240],
+        [400, 160],
         'RoyalGranites',
         [1000, 314],
       ),
@@ -287,7 +287,7 @@ export const SPONSOR_BANDS_2026 = {
         'skill-tech-institute',
         'Skill Tech Institute · Palakkad & Koduvayur',
         'skilltechacademy',
-        [600, 240],
+        [400, 160],
         'SkillTech',
         [1000, 314],
       ),
@@ -296,14 +296,14 @@ export const SPONSOR_BANDS_2026 = {
         'tezpro-fire-system',
         'Tezpro Fire System Pvt. Ltd.',
         'tezprofiresafety',
-        [600, 240],
+        [400, 160],
         'TezProFireSystem',
         [1000, 314],
       ),
     ],
   } satisfies SponsorBandGroup,
 
-  // Band 7: After Mega Entertainment Events, Before Post-Festival Events (4 Standard 5:2 Ads · 600x240 Thumbs)
+  // Band 7: After Mega Entertainment Events, Before Post-Festival Events (4 Standard 5:2 Ads · 400x160 Thumbs)
   band7AfterEntertainment: {
     id: 'sponsors-band-7',
     variant: 'standard',
@@ -313,7 +313,7 @@ export const SPONSOR_BANDS_2026 = {
         'peacock-bridal-studio',
         'Peacock Bridal Studio · Koduvayur',
         'peacockbridalstudio',
-        [600, 240],
+        [400, 160],
         'PeacockBridalStudio',
         [1000, 314],
       ),
@@ -322,7 +322,7 @@ export const SPONSOR_BANDS_2026 = {
         'national-driving-institute',
         'National Driving Institute · Pittupeedika, Koduvayur',
         'nationaldriving',
-        [600, 240],
+        [400, 160],
         'NationalDriving',
         [1000, 314],
       ),
@@ -331,7 +331,7 @@ export const SPONSOR_BANDS_2026 = {
         'lic-sukumaran',
         'LIC Premium Point — P. Sukumaran · Koduvayur',
         'licsukumaran',
-        [600, 240],
+        [400, 160],
         'LICSukumaran',
         [1000, 314],
       ),
@@ -340,14 +340,14 @@ export const SPONSOR_BANDS_2026 = {
         'hotel-keerthy',
         'Hotel Keerthy · Pure Vegetarian, Palakkad',
         'hotelkeerthy',
-        [600, 240],
+        [400, 160],
         'HotelKeerthi',
         [1000, 314],
       ),
     ],
   } satisfies SponsorBandGroup,
 
-  // Band 8: After Post-Festival Events, Before Closing Section (4 Standard 5:2 Ads · 600x240 Thumbs)
+  // Band 8: After Post-Festival Events, Before Closing Section (4 Standard 5:2 Ads · 400x160 Thumbs)
   band8AfterPostEvents: {
     id: 'sponsors-band-8',
     variant: 'standard',
@@ -357,7 +357,7 @@ export const SPONSOR_BANDS_2026 = {
         'hindustan-fashion-point',
         'Hindustan Fashion Point Ladies Tailoring · Koduvayur',
         'hindustanfashion',
-        [600, 240],
+        [400, 160],
         'HindustanTailor',
         [1000, 314],
       ),
@@ -366,7 +366,7 @@ export const SPONSOR_BANDS_2026 = {
         'bismi-vegetables',
         'Bismi Vegetables · Main Road, Koduvayur',
         'bismivegetables',
-        [600, 240],
+        [400, 160],
         'BismiVegetables',
         [1000, 314],
       ),
@@ -375,7 +375,7 @@ export const SPONSOR_BANDS_2026 = {
         'sabari-bakes-finance',
         'Sabari Bakes & Sabari Finance · Mannathukavu',
         'sabaribakesfin',
-        [600, 240],
+        [400, 160],
         'SabariBakesFinance',
         [1000, 314],
       ),
@@ -384,7 +384,7 @@ export const SPONSOR_BANDS_2026 = {
         'welcome-water-supply',
         'Welcome Water Supply · Koduvayur',
         'welcomewater',
-        [600, 240],
+        [400, 160],
         'WelcomeWater',
         [1000, 314],
       ),
@@ -422,7 +422,7 @@ export const ALL_SPONSORS_ORDERED: SponsorEntry[] = [
 ]
 
 /**
- * Stream 2 — Isolated Sponsor Lightbox Sequence (31 JPG Full Ads):
+ * Stream 2 — Isolated Sponsor Lightbox Sequence (31 WebP Full Ads):
  * Completely separate from the Festival Lightbox sequence.
  */
 export const SPONSOR_LIGHTBOX_SEQUENCE: LightboxImageItem[] = ALL_SPONSORS_ORDERED.map(

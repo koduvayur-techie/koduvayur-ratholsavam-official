@@ -73,6 +73,7 @@ function handlePanelClick(panelId: string) {
           class="kr-sacred-frame group relative block aspect-square w-full overflow-hidden rounded-[3px] text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--kr-gold)]"
           @click="handlePanelClick(panel.id)"
         >
+          <ImageExpandBadge size="md" />
           <img
             :src="panel.src"
             :alt="panel.alt"
@@ -82,17 +83,6 @@ function handlePanelClick(panelId: string) {
             decoding="async"
             class="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.024]"
           />
-
-          <span
-            v-if="panel.badgeLabel"
-            class="pointer-events-none absolute right-3.5 bottom-3.5 z-10 inline-flex items-center gap-1.5 rounded-full border border-[var(--kr-border-strong)] bg-[var(--kr-surface)]/92 px-3 py-1 font-sans text-[0.72rem] text-[var(--kr-ink)] backdrop-blur-xs transition-transform duration-300 group-hover:scale-105"
-            aria-hidden="true"
-          >
-            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" class="h-3.5 w-3.5 text-[var(--kr-gold-deep)]">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 3.5h-4v4m9-4h4v4m0 5v4h-4m-9 0h4v-4" />
-            </svg>
-            <span>{{ panel.badgeLabel }}</span>
-          </span>
         </button>
       </div>
     </div>

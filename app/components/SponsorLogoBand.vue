@@ -41,6 +41,7 @@ function handleFallbackError(e: Event) {
           class="kr-sacred-frame group relative block aspect-[3/1] w-full overflow-hidden rounded-[3px] bg-[var(--kr-surface-elevated)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--kr-gold)]"
           @click="openSponsorLightboxById(sponsor.id)"
         >
+          <ImageExpandBadge size="sm" />
           <img
             :src="sponsor.thumbSrc"
             :alt="sponsor.name"
@@ -69,6 +70,7 @@ function handleFallbackError(e: Event) {
           class="group relative block aspect-[5/2] w-full overflow-hidden rounded-[3px] border border-[var(--kr-border-strong)] bg-[var(--kr-surface-elevated)] shadow-2xs transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--kr-gold)] hover:shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--kr-gold)]"
           @click="openSponsorLightboxById(sponsor.id)"
         >
+          <ImageExpandBadge size="sm" />
           <img
             :src="sponsor.thumbSrc"
             :alt="sponsor.name"
@@ -97,6 +99,7 @@ function handleFallbackError(e: Event) {
           class="kr-closing-single-card kr-sacred-frame group relative block aspect-[3/1] w-full overflow-hidden rounded-[3px] bg-[var(--kr-surface-elevated)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--kr-gold)]"
           @click="openSponsorLightboxById(sponsor.id)"
         >
+          <ImageExpandBadge size="sm" />
           <img
             :src="sponsor.thumbSrc"
             :alt="sponsor.name"
