@@ -1,6 +1,14 @@
 <!-- app/components/FestivalLightbox.vue -->
 <script setup lang="ts">
-import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
+import {
+  type ComponentPublicInstance,
+  computed,
+  nextTick,
+  onMounted,
+  onUnmounted,
+  ref,
+  watch,
+} from 'vue'
 import { FESTIVAL_CHOREOGRAPHY } from '~/constants/choreography'
 
 const {
@@ -18,10 +26,12 @@ const rootRef = ref<HTMLElement | null>(null)
 const stageLayerRef = ref<HTMLElement | null>(null)
 const imgRef = ref<HTMLImageElement | null>(null)
 
-// 1x Swipe / Vertical-Dismiss state
+// 1x Swipe / Vertical-Dismiss & Release-Continuity state
 const dragOffsetX = ref(0)
 const dragOffsetY = ref(0)
+const lastReleaseSwipeX = ref(0)
 const isSwipeDragging = ref(false)
+const isSwipeSettling = ref(false)
 
 // Multi-Touch Zoom & 2D Pan state
 const zoomScale = ref(1)
@@ -35,9 +45,14 @@ const currentSlide = computed(() => lightboxItems.value[lightboxIndex.value] ?? 
 const canNavigateLoop = computed(() => totalCount.value > 1)
 const isZoomed = computed(() => zoomScale.value > 1.03 || isZoomInteracting.value)
 
-const stageTransformStyle = computed(() => {
+const stageBoxStyle = computed(() => {
+  const baseVars: Record<string, string> = {
+    '--kr-swipe-release-x': `${lastReleaseSwipeX.value.toFixed(1)}px`,
+  }
+
   if (zoomScale.value !== 1 || panX.value !== 0 || panY.value !== 0 || isZoomAnimating.value) {
     return {
+      ...baseVars,
       transform: `translate3d(${panX.value.toFixed(1)}px, ${panY.value.toFixed(1)}px, 0) scale(${zoomScale.value.toFixed(4)})`,
       transition: isZoomInteracting.value
         ? 'none'
@@ -45,13 +60,19 @@ const stageTransformStyle = computed(() => {
     }
   }
 
-  if (!isSwipeDragging.value && dragOffsetX.value === 0 && dragOffsetY.value === 0) {
-    return {}
+  if (
+    !isSwipeDragging.value &&
+    !isSwipeSettling.value &&
+    dragOffsetX.value === 0 &&
+    dragOffsetY.value === 0
+  ) {
+    return baseVars
   }
 
   const verticalRatio = Math.min(1, Math.abs(dragOffsetY.value) / 260)
   const scale = 1 - verticalRatio * 0.08
   return {
+    ...baseVars,
     transform: `translate3d(${dragOffsetX.value.toFixed(1)}px, ${(dragOffsetY.value * 0.65).toFixed(1)}px, 0) scale(${scale.toFixed(3)})`,
     transition: isSwipeDragging.value
       ? 'none'
@@ -109,11 +130,25 @@ let lastTapX = 0
 let lastTapY = 0
 let lastWheelStepTime = 0
 let zoomAnimTimer: ReturnType<typeof setTimeout> | null = null
+let swipeSettleTimer: ReturnType<typeof setTimeout> | null = null
+
+function bindActiveSlideImg(el: Element | ComponentPublicInstance | null, slideId: string) {
+  if (el && currentSlide.value?.id === slideId) {
+    imgRef.value = el as HTMLImageElement
+  }
+}
 
 function clearZoomAnimTimer() {
   if (zoomAnimTimer !== null) {
     clearTimeout(zoomAnimTimer)
     zoomAnimTimer = null
+  }
+}
+
+function clearSwipeSettleTimer() {
+  if (swipeSettleTimer !== null) {
+    clearTimeout(swipeSettleTimer)
+    swipeSettleTimer = null
   }
 }
 
@@ -124,6 +159,30 @@ function triggerSmoothZoomTransition() {
     isZoomAnimating.value = false
     zoomAnimTimer = null
   }, FESTIVAL_CHOREOGRAPHY.lightbox.zoomTransitionMs + 25)
+}
+
+function triggerSwipeSettleBack() {
+  clearSwipeSettleTimer()
+  isSwipeSettling.value = true
+  swipeSettleTimer = setTimeout(() => {
+    isSwipeSettling.value = false
+    swipeSettleTimer = null
+  }, FESTIVAL_CHOREOGRAPHY.lightbox.zoomTransitionMs + 25)
+}
+
+function stepNextFromControl() {
+  lastReleaseSwipeX.value = 0
+  nextLightboxSlide()
+}
+
+function stepPrevFromControl() {
+  lastReleaseSwipeX.value = 0
+  prevLightboxSlide()
+}
+
+function jumpToSlideFromControl(idx: number) {
+  lastReleaseSwipeX.value = 0
+  setLightboxIndex(idx)
 }
 
 function captureStagePointer(pointerId: number) {
@@ -154,9 +213,9 @@ function releaseStagePointer(pointerId: number) {
 
 function isPointOnImage(clientX: number, clientY: number, target: EventTarget | null): boolean {
   const targetEl = target as HTMLElement | null
-  if (targetEl?.closest('.kr-lightbox-img') || targetEl?.closest('.kr-lightbox-stage-box')) {
-    const img = imgRef.value
-    if (!img) return true
+  const img = imgRef.value
+
+  if (img) {
     const rect = img.getBoundingClientRect()
     if (rect.width > 0 && rect.height > 0) {
       return (
@@ -166,20 +225,9 @@ function isPointOnImage(clientX: number, clientY: number, target: EventTarget | 
         clientY <= rect.bottom
       )
     }
-    return true
   }
 
-  const img = imgRef.value
-  if (!img) return false
-  const rect = img.getBoundingClientRect()
-  return (
-    rect.width > 0 &&
-    rect.height > 0 &&
-    clientX >= rect.left &&
-    clientX <= rect.right &&
-    clientY >= rect.top &&
-    clientY <= rect.bottom
-  )
+  return Boolean(targetEl?.closest('.kr-lightbox-img'))
 }
 
 function syncViewportAndImageMetrics() {
@@ -192,6 +240,12 @@ function syncViewportAndImageMetrics() {
     baseImgW = img.offsetWidth
     baseImgH = img.offsetHeight
   }
+}
+
+function handleSlideImgLoad(e: Event, slideId: string) {
+  if (currentSlide.value?.id !== slideId) return
+  imgRef.value = e.currentTarget as HTMLImageElement
+  syncViewportAndImageMetrics()
 }
 
 function clampPanBounds(rawX: number, rawY: number, scale: number): [number, number] {
@@ -212,11 +266,19 @@ function clampPanBounds(rawX: number, rawY: number, scale: number): [number, num
   ]
 }
 
-function resetSwipeState() {
+function resetSwipeState(settleSmoothly = false) {
+  const hadOffset = dragOffsetX.value !== 0 || dragOffsetY.value !== 0
   isSwipeDragging.value = false
   dragOffsetX.value = 0
   dragOffsetY.value = 0
   swipeAxis = null
+
+  if (settleSmoothly && hadOffset) {
+    triggerSwipeSettleBack()
+  } else {
+    clearSwipeSettleTimer()
+    isSwipeSettling.value = false
+  }
 }
 
 function resetAllTransformState(animate = false) {
@@ -228,7 +290,7 @@ function resetAllTransformState(animate = false) {
   hadMultiTouch = false
   panEngaged = false
   isZoomInteracting.value = false
-  resetSwipeState()
+  resetSwipeState(false)
 
   if (animate && (zoomScale.value !== 1 || panX.value !== 0 || panY.value !== 0)) {
     triggerSmoothZoomTransition()
@@ -270,7 +332,6 @@ function zoomAroundClientPoint(
 }
 
 function toggleDoubleTapZoom(clientX: number, clientY: number) {
-  // If zoomed in at ANY level (from double-tap, pinch-zoom, or wheel), settle cleanly to 1x default
   if (zoomScale.value > 1.03 || panX.value !== 0 || panY.value !== 0) {
     resetAllTransformState(true)
   } else {
@@ -309,6 +370,10 @@ function handleStagePointerDown(e: PointerEvent) {
   const targetEl = e.target as HTMLElement | null
   if (targetEl?.closest('button')) return
 
+  lastReleaseSwipeX.value = 0
+  clearSwipeSettleTimer()
+  isSwipeSettling.value = false
+
   activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY })
 
   // 2+ fingers -> immediately engage multi-touch pinch + midpoint pan
@@ -319,7 +384,7 @@ function handleStagePointerDown(e: PointerEvent) {
     pointerMovedBeyondTap = true
     panEngaged = true
     gestureMode = 'pinch'
-    resetSwipeState()
+    resetSwipeState(false)
     isZoomInteracting.value = true
 
     for (const id of activePointers.keys()) {
@@ -387,7 +452,6 @@ function handleStagePointerMove(e: PointerEvent) {
       const distFromDown = Math.hypot(e.clientX - downStartX, e.clientY - downStartY)
       if (distFromDown <= TAP_SLOP_PX) return
 
-      // Engage lazy pan seamlessly with zero jump
       clearZoomAnimTimer()
       isZoomAnimating.value = false
       panEngaged = true
@@ -413,7 +477,6 @@ function handleStagePointerMove(e: PointerEvent) {
     if (swipeAxis === null) {
       if (Math.hypot(rawDx, rawDy) <= TAP_SLOP_PX) return
 
-      // Engage 1x swipe seamlessly with zero jump
       pointerMovedBeyondTap = true
       isSwipeDragging.value = true
       swipeAxis = Math.abs(rawDx) >= Math.abs(rawDy) ? 'x' : 'y'
@@ -474,7 +537,6 @@ function handleStagePointerUp(e: PointerEvent) {
   if (!hadMultiTouch && !pointerMovedBeyondTap) {
     const currentlyZoomed = zoomScale.value > 1.03 || panX.value !== 0 || panY.value !== 0
 
-    // Tap on image (at 1x or zoomed) OR tap anywhere on stage while zoomed -> Double-Tap candidate
     if (downOnImage || currentlyZoomed) {
       const { doubleTapDelayMs, doubleTapMaxDistPx } = FESTIVAL_CHOREOGRAPHY.lightbox
       const dt = now - lastTapTime
@@ -485,7 +547,7 @@ function handleStagePointerUp(e: PointerEvent) {
         isZoomInteracting.value = false
         panEngaged = false
         gestureMode = 'none'
-        resetSwipeState()
+        resetSwipeState(false)
         toggleDoubleTapZoom(e.clientX, e.clientY)
         return
       }
@@ -496,7 +558,7 @@ function handleStagePointerUp(e: PointerEvent) {
       isZoomInteracting.value = false
       panEngaged = false
       gestureMode = 'none'
-      resetSwipeState()
+      resetSwipeState(false)
       return
     }
 
@@ -504,7 +566,7 @@ function handleStagePointerUp(e: PointerEvent) {
     if (downOnBackdrop && !currentlyZoomed) {
       lastTapTime = 0
       gestureMode = 'none'
-      resetSwipeState()
+      resetSwipeState(false)
       closeLightbox()
       return
     }
@@ -538,6 +600,7 @@ function handleStagePointerUp(e: PointerEvent) {
   if (gestureMode === 'swipe' && isSwipeDragging.value) {
     const dx = e.clientX - swipeStartX
     const dy = e.clientY - swipeStartY
+    const capturedSwipeX = dragOffsetX.value
     const {
       swipeDistanceThresholdPx,
       swipeVelocityThresholdPxPerMs,
@@ -546,9 +609,9 @@ function handleStagePointerUp(e: PointerEvent) {
 
     const axis = swipeAxis
     gestureMode = 'none'
-    resetSwipeState()
 
     if (axis === 'y' && Math.abs(dy) >= verticalDismissThresholdPx) {
+      resetSwipeState(false)
       closeLightbox()
       return
     }
@@ -556,14 +619,24 @@ function handleStagePointerUp(e: PointerEvent) {
     if (axis === 'x' && canNavigateLoop.value) {
       const isStrongFlick = Math.abs(swipeVxPxPerMs) >= swipeVelocityThresholdPxPerMs
       if (dx <= -swipeDistanceThresholdPx || (isStrongFlick && swipeVxPxPerMs < 0)) {
+        lastReleaseSwipeX.value = capturedSwipeX
+        resetSwipeState(false)
         nextLightboxSlide()
-      } else if (dx >= swipeDistanceThresholdPx || (isStrongFlick && swipeVxPxPerMs > 0)) {
+        return
+      }
+      if (dx >= swipeDistanceThresholdPx || (isStrongFlick && swipeVxPxPerMs > 0)) {
+        lastReleaseSwipeX.value = capturedSwipeX
+        resetSwipeState(false)
         prevLightboxSlide()
+        return
       }
     }
+
+    // Below threshold: smoothly ease back to center
+    resetSwipeState(true)
   } else {
     gestureMode = 'none'
-    resetSwipeState()
+    resetSwipeState(true)
   }
 }
 
@@ -574,7 +647,7 @@ function handleStagePointerCancel(e: PointerEvent) {
     isZoomInteracting.value = false
     panEngaged = false
     gestureMode = 'none'
-    resetSwipeState()
+    resetSwipeState(true)
     if (zoomScale.value <= 1.03) {
       resetAllTransformState(true)
     } else {
@@ -610,9 +683,9 @@ function handleWheel(e: WheelEvent) {
 
   lastWheelStepTime = now
   if (primaryDelta > 0) {
-    nextLightboxSlide()
+    stepNextFromControl()
   } else {
-    prevLightboxSlide()
+    stepPrevFromControl()
   }
 }
 
@@ -633,20 +706,20 @@ function handleKeydown(e: KeyboardEvent) {
     case 'ArrowRight':
     case 'PageDown':
       e.preventDefault()
-      nextLightboxSlide()
+      stepNextFromControl()
       break
     case 'ArrowLeft':
     case 'PageUp':
       e.preventDefault()
-      prevLightboxSlide()
+      stepPrevFromControl()
       break
     case 'Home':
       e.preventDefault()
-      setLightboxIndex(0)
+      jumpToSlideFromControl(0)
       break
     case 'End':
       e.preventDefault()
-      setLightboxIndex(totalCount.value - 1)
+      jumpToSlideFromControl(totalCount.value - 1)
       break
   }
 }
@@ -695,12 +768,16 @@ watch(
     baseImgH = 0
     lastTapTime = 0
 
-    if (open) {
-      preloadNeighbors(idx)
-      await nextTick()
-      syncViewportAndImageMetrics()
-      rootRef.value?.focus({ preventScroll: true })
+    if (!open) {
+      imgRef.value = null
+      lastReleaseSwipeX.value = 0
+      return
     }
+
+    preloadNeighbors(idx)
+    await nextTick()
+    syncViewportAndImageMetrics()
+    rootRef.value?.focus({ preventScroll: true })
   },
 )
 
@@ -712,6 +789,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   clearZoomAnimTimer()
+  clearSwipeSettleTimer()
   window.removeEventListener('keydown', handleKeydown)
   window.removeEventListener('resize', handleViewportResizeOrRotate)
   window.removeEventListener('orientationchange', handleViewportResizeOrRotate)
@@ -778,7 +856,7 @@ onUnmounted(() => {
           aria-label="Previous image"
           class="kr-side-nav left-4 z-20 hidden h-11 w-11 items-center justify-center rounded-full border border-[#d9a94c]/38 bg-black/55 text-[#f6f1e7] backdrop-blur-md transition-all duration-250 hover:scale-106 hover:border-[#ebca7e] hover:text-[#f8dfa1] active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#d9a94c] sm:left-6 lg:left-8"
           :class="isZoomed ? 'pointer-events-none opacity-0' : 'opacity-100'"
-          @click.stop="prevLightboxSlide"
+          @click.stop="stepPrevFromControl"
         >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="h-5 w-5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 5.25 8.25 12 15 18.75" />
@@ -792,7 +870,7 @@ onUnmounted(() => {
           aria-label="Next image"
           class="kr-side-nav right-4 z-20 hidden h-11 w-11 items-center justify-center rounded-full border border-[#d9a94c]/38 bg-black/55 text-[#f6f1e7] backdrop-blur-md transition-all duration-250 hover:scale-106 hover:border-[#ebca7e] hover:text-[#f8dfa1] active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#d9a94c] sm:right-6 lg:right-8"
           :class="isZoomed ? 'pointer-events-none opacity-0' : 'opacity-100'"
-          @click.stop="nextLightboxSlide"
+          @click.stop="stepNextFromControl"
         >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="h-5 w-5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9 5.25 15.75 12 9 18.75" />
@@ -810,16 +888,13 @@ onUnmounted(() => {
           @pointercancel="handleStagePointerCancel"
         >
           <div
-            class="kr-lightbox-stage-box flex items-center justify-center will-change-transform"
-            :style="stageTransformStyle"
+            class="kr-lightbox-stage-box will-change-transform"
+            :style="stageBoxStyle"
           >
-            <Transition
-              :name="lightboxDirection === 'next' ? 'kr-slide-next' : 'kr-slide-prev'"
-              mode="out-in"
-            >
+            <Transition :name="lightboxDirection === 'next' ? 'kr-slide-next' : 'kr-slide-prev'">
               <img
                 :key="currentSlide.id"
-                ref="imgRef"
+                :ref="(el) => bindActiveSlideImg(el, currentSlide!.id)"
                 :src="currentSlide.src"
                 :alt="currentSlide.alt"
                 :width="currentSlide.width"
@@ -834,7 +909,7 @@ onUnmounted(() => {
                       ? 'cursor-grabbing'
                       : 'cursor-grab'
                 "
-                @load="syncViewportAndImageMetrics"
+                @load="(e) => handleSlideImgLoad(e, currentSlide!.id)"
                 @dragstart.prevent
                 @error="handleFallbackError"
               />
@@ -864,7 +939,7 @@ onUnmounted(() => {
               data-cursor-interactive
               aria-label="Previous image"
               class="flex h-10 w-14 items-center justify-center rounded-full border border-[#d9a94c]/38 bg-black/60 text-[#f6f1e7] backdrop-blur-md transition-all active:scale-95"
-              @click.stop="prevLightboxSlide"
+              @click.stop="stepPrevFromControl"
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="h-4.5 w-4.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 5.25 8.25 12 15 18.75" />
@@ -876,7 +951,7 @@ onUnmounted(() => {
               data-cursor-interactive
               aria-label="Next image"
               class="flex h-10 w-14 items-center justify-center rounded-full border border-[#d9a94c]/38 bg-black/60 text-[#f6f1e7] backdrop-blur-md transition-all active:scale-95"
-              @click.stop="nextLightboxSlide"
+              @click.stop="stepNextFromControl"
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" class="h-4.5 w-4.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 5.25 15.75 12 9 18.75" />
@@ -901,9 +976,20 @@ onUnmounted(() => {
   -webkit-backdrop-filter: blur(14px);
 }
 
-/* Portrait mobile resting optical balance: clears both top header and bottom 2-line caption + nav */
+/* Portrait mobile resting optical balance */
 .kr-lightbox-stage-layer {
   padding-bottom: 2.25rem;
+}
+
+/* CSS Grid 1/1 stack keeps outgoing & incoming slides perfectly overlapped without layout shifts */
+.kr-lightbox-stage-box {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  place-items: center;
+}
+
+.kr-lightbox-stage-box > * {
+  grid-area: 1 / 1;
 }
 
 .kr-lightbox-img {
@@ -966,7 +1052,7 @@ onUnmounted(() => {
 
 .kr-lightbox-fade-enter-active,
 .kr-lightbox-fade-leave-active {
-  transition: opacity 260ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: opacity 240ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .kr-lightbox-fade-enter-from,
@@ -974,32 +1060,71 @@ onUnmounted(() => {
   opacity: 0;
 }
 
+/* Simultaneous Silk Cross-Glide: incoming rises briskly (z-2) while outgoing holds luminance underneath (z-1) */
 .kr-slide-next-enter-active,
-.kr-slide-next-leave-active,
-.kr-slide-prev-enter-active,
-.kr-slide-prev-leave-active {
+.kr-slide-prev-enter-active {
+  z-index: 2;
   transition:
-    opacity 200ms cubic-bezier(0.22, 1, 0.36, 1),
-    transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+    opacity 230ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 250ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform, opacity;
+}
+
+.kr-slide-next-leave-active,
+.kr-slide-prev-leave-active {
+  z-index: 1;
+  pointer-events: none;
+  transition:
+    opacity 210ms cubic-bezier(0.35, 0, 0.8, 0.5),
+    transform 230ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform, opacity;
 }
 
 .kr-slide-next-enter-from {
   opacity: 0;
-  transform: translate3d(24px, 0, 0) scale(0.985);
+  transform: translate3d(42px, 0, 0) scale(0.99);
+}
+
+.kr-slide-next-leave-from {
+  opacity: 1;
+  transform: translate3d(var(--kr-swipe-release-x, 0px), 0, 0) scale(1);
 }
 
 .kr-slide-next-leave-to {
   opacity: 0;
-  transform: translate3d(-24px, 0, 0) scale(0.985);
+  transform: translate3d(calc(var(--kr-swipe-release-x, 0px) - 42px), 0, 0) scale(0.99);
 }
 
 .kr-slide-prev-enter-from {
   opacity: 0;
-  transform: translate3d(-24px, 0, 0) scale(0.985);
+  transform: translate3d(-42px, 0, 0) scale(0.99);
+}
+
+.kr-slide-prev-leave-from {
+  opacity: 1;
+  transform: translate3d(var(--kr-swipe-release-x, 0px), 0, 0) scale(1);
 }
 
 .kr-slide-prev-leave-to {
   opacity: 0;
-  transform: translate3d(24px, 0, 0) scale(0.985);
+  transform: translate3d(calc(var(--kr-swipe-release-x, 0px) + 42px), 0, 0) scale(0.99);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kr-slide-next-enter-active,
+  .kr-slide-prev-enter-active,
+  .kr-slide-next-leave-active,
+  .kr-slide-prev-leave-active {
+    transition: opacity 140ms linear;
+  }
+
+  .kr-slide-next-enter-from,
+  .kr-slide-next-leave-from,
+  .kr-slide-next-leave-to,
+  .kr-slide-prev-enter-from,
+  .kr-slide-prev-leave-from,
+  .kr-slide-prev-leave-to {
+    transform: none;
+  }
 }
 </style>
